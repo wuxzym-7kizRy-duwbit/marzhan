@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Мини-игра "Угадай число"</title>
+  <style>
+    /* Убираем маргины и паддинги по умолчанию */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    /* Фон с градиентом */
+    body {
+      font-family: 'Arial', sans-serif;
+      background: linear-gradient(to top left, #6a11cb, #2575fc); /* Градиентный фон */
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      color: white;
+    }
+
+    /* Контейнер для игры */
+    .game-container {
+      background: rgba(0, 0, 0, 0.6); /* Полупрозрачный фон */
+      padding: 40px;
+      border-radius: 15px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+      width: 100%;
+      max-width: 500px;
+    }
+
+    h1 {
+      font-size: 2.5rem;
+      margin-bottom: 20px;
+      color: #fff;
+      font-weight: 700;
+    }
+
+    /* Стиль для вывода результата */
+    .message {
+      font-size: 1.2rem;
+      margin: 15px 0;
+      font-weight: bold;
+    }
+
+    /* Ввод для чисел */
+    .guess-input {
+      padding: 10px;
+      font-size: 1.2rem;
+      width: 80%;
+      border-radius: 10px;
+      border: none;
+      outline: none;
+      text-align: center;
+    }
+
+    /* Кнопка отправить */
+    .submit-button {
+      padding: 12px 20px;
+      font-size: 1.2rem;
+      background-color: #ff6347; /* Красная кнопка */
+      border: none;
+      border-radius: 10px;
+      color: white;
+      cursor: pointer;
+      margin-top: 20px;
+      width: 100%;
+      transition: background-color 0.3s;
+    }
+
+    .submit-button:hover {
+      background-color: #ff4500; /* Меняется цвет при наведении */
+    }
+
+    .reset-button {
+      padding: 12px 20px;
+      font-size: 1.2rem;
+      background-color: #32cd32; /* Зелёная кнопка */
+      border: none;
+      border-radius: 10px;
+      color: white;
+      cursor: pointer;
+      width: 100%;
+      margin-top: 10px;
+      transition: background-color 0.3s;
+    }
+
+    .reset-button:hover {
+      background-color: #28a745; /* Меняется цвет при наведении */
+    }
+
+    /* Дополнительные стили для анимации */
+    .animate-message {
+      animation: fadeIn 1s ease-out;
+    }
+
+    @keyframes fadeIn {
+      0% {
+        opacity: 0;
+      }
+      100% {
+        opacity: 1;
+      }
+    }
+
+  </style>
+</head>
+<body>
+
+  <div class="game-container">
+    <h1>Игра "Угадай число"</h1>
+    <p class="message animate-message" id="message">Введите число от 1 до 100:</p>
+
+    <input type="number" class="guess-input" id="guess" placeholder="Число" min="1" max="100">
+    
+    <button class="submit-button" id="submit-button">Проверить</button>
+    <button class="reset-button" id="reset-button" style="display: none;">Сыграть снова</button>
+  </div>
+
+  <script>
+    // Инициализация переменных
+    const submitButton = document.getElementById('submit-button');
+    const resetButton = document.getElementById('reset-button');
+    const guessInput = document.getElementById('guess');
+    const message = document.getElementById('message');
+
+    let secretNumber;
+    let attempts = 0;
+
+    // Функция для старта новой игры
+    function startGame() {
+      secretNumber = Math.floor(Math.random() * 100) + 1; // Загадываем случайное число от 1 до 100
+      attempts = 0;
+      guessInput.value = ''; // Очищаем поле ввода
+      guessInput.disabled = false; // Разрешаем ввод
+      submitButton.style.display = 'block'; // Показываем кнопку "Проверить"
+      resetButton.style.display = 'none'; // Прячем кнопку "Сыграть снова"
+      message.textContent = 'Введите число от 1 до 100:';
+      message.classList.remove('animate-message'); // Убираем анимацию
+      setTimeout(() => message.classList.add('animate-message'), 100); // Добавляем анимацию
+    }
+
+    // Обработчик клика на кнопку "Проверить"
+    submitButton.addEventListener('click', function() {
+      const userGuess = Number(guessInput.value);
+      attempts++;
+
+      if (userGuess === secretNumber) {
+        message.textContent = `Поздравляю! Вы угадали число за ${attempts} попыток!`;
+        message.style.color = 'green';
+        guessInput.disabled = true;
+        submitButton.style.display = 'none';
+        resetButton.style.display = 'block';
+      } else if (userGuess < secretNumber) {
+        message.textContent = 'Ваше число меньше загаданного. Попробуйте снова.';
+        message.style.color = 'orange';
+      } else {
+        message.textContent = 'Ваше число больше загаданного. Попробуйте снова.';
+        message.style.color = 'orange';
+      }
+      message.classList.add('animate-message');
+    });
+
+    // Обработчик клика на кнопку "Сыграть снова"
+    resetButton.addEventListener('click', startGame);
+
+    // Инициализируем первую игру
+    startGame();
+  </script>
+
+</body>
+</html>
